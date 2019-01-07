@@ -291,7 +291,7 @@ It is also necessary to know how the cluster is structured:
 
 ![](resources/GWDGarchitecture.PNG)
 
-Source: \[GWDG documentation)(<https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs>)
+Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)
 
 ### File storage in the cluster
 
