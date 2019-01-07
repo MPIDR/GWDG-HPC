@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Lab part 1"
+title: "Hands-on lab (First Part)"
 output: 
   github_document:
     toc: true
@@ -208,7 +208,7 @@ ls -l per_test
 -rw------- 1 d.alburezgutierrez MRDF 0 Jan  4 12:59 file1
 ```
 
-Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's N: drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
+Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's `N:` drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
 
 ### Editing text files from the terminal
 
@@ -220,12 +220,16 @@ In this tutorial we will use `nano`. To run it, simply type `nano {filename}` on
 touch test
 nano test
 ```
-Write some text to save in your file and press Ctrl+x to exit (and save). We can now check that the changes were saved by printing the file:
+Write some text to save in your file and press `Ctrl`+`x` to exit (and save). We can now check that the changes were saved by printing the file:
 
 ```{bash, eval = F}
 cat test
 Hello World!
 ```
+
+You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
+
+![](nano_help.png)
 
 ## File transfer with WinSCP
 
@@ -254,33 +258,129 @@ To change to the /scratch file system, click in the remote windows (right), pres
 
 To create a subfolder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
 
+## The cluster and queue system
 
-## The queue system
+For submitting jobs to the cluster it is necessary to create a `shell file` using a `batch system` through LSF commands. So, the GWDG cluster is operated by the LSF platform, which is operated by shell commands on the frontends. The **frontends** are special nodes (gwdu101, gwudu102, and gwdu103) provided to interact with the cluster via shell commands.
 
+The batch system distributes the processes across job slots, and matches the job's requirements to the capabilities of the job slots. Once sufficient suitable job slots are found, the job is started. LSF considers jobs to be started in the order of their priority.
 
-```{bash, eval = F}
+It is also necessary to know how the cluster is structured:
 
+![](GWDGarchitecture.PNG)
+
+Source: [GWDG documentation)[https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs]
+
+### File storage in the cluster
+
+* $HOME: our home directory is available everywhere, permanent, and comes with backup, but it is comparatively slow.
+
+* /scratch: this is the shared scratch space, available on *gwda, gwdc*, and *gwdd* nodes and on the frontends *gwdu101* and *gwdu102*. For being sure of having a node with access to shared */scratch* the command `-R scratch` must be written in the shell file.
+
+* /scratch2: this is the shared scratch space, available on *dfa, dsu, dge*, and *dmp* nodes, and on the frontend *gwdu103*. For being sure of having a node with access to shared */scratch2* the command `-R scratch2` must be written in the shell file.
+
+### Processing jobs on the cluster
+
+Jobs are usually not run *interactively* in the GWDG cluster. Compute-intensive jobs are submitted to specific *queues* of the cluster. These jobs are not processed immediately, but rather *stand in the queue* until the necessary resources are made available for the cluster to run them (for more info, see the [official documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)).  
+
+Submitting a job is a two-step process consisting of
+
+a. Creating a job script
+b. Submitting the job script to a GWDG queue for execution
+
+### a. The job script
+
+Job scripts are shell scripts with special comment sections (`#BSUB`) that force each line to be interpreted as an option of `bsub`. The job files can be created through either the linux terminal using the editor *nano* or Notepad++ in Windows. 
+
+A typical job script looks something like this:
+
+```{r, eval=FALSE}
+#!/bin/sh 
+#BSUB -N 
+#BSUB -u <email address>
+#BSUB -q <queue to submit job to> 
+#BSUB -W <max runtime in hh:mm>
+#BSUB -o <file path> 
+ 
+<Command to execute>
 ```
 
-```{bash, eval = F}
+#### b. Submitting job scripts with the `bsub` command
 
+The `bsub` command submits information regarding your job to the batch system. The basic syntax:
+
+```{r, eval=FALSE}
+bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 ```
 
-```{bash, eval = F}
+#### Some `bsub` parameters
 
+- -N: sends the job report to you by email when the job finishes.
+- -u: sends the email to the specified email destination.
+- -W: sets the maximum runtime limit of the job. If this time is exceeded the job is killed.
+- -o: appends the standard output of the job to the specified file path.
+
+All the parameters of `bsub` can be specified via the terminal but this results in very long commands. Job scripts can be used insted to specify all relevant parameters of `bsub`.
+
+#### Specifying node properties with *-R*
+
+`-R` runs the job on a host that meets the specified resource requirements. Some of its basic parameters are:
+
+* span[hosts=1]: this puts all processes on one host.
+* span[ptile=< x >]: *x* denotes the exact number of job slots to be used on each host. If the total process number is not divisible by *x*.
+* scratch(2): the node must have access to *scratch(2)*.
+
+### Example: submitting jobs to the queue
+
+In this example, we will submit a simple R script to the `XX` queue of the cluster. We first create the `sample_code.R` using `nano` (copy and paste the R commands).
+
+```{r, eval=FALSE}
+nano sample_code.R
+
+--Copy and paste this text-------
+#!/usr/bin/env r 
+data("airquality")
+print(head(airquality, 6))
+-------------------------------
 ```
 
-### Submitting jobs to the cluster
+We now create a simple job script. Edit the text below before copying and pasting it. Note that the `sample_code.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
 
+```{r, eval=FALSE}
+> nano job_script.sh
 
+--Copy and paste this text-------
+#!/bin/sh 
+#BSUB -N 
+#BSUB -q mpi 
+#BSUB -o NameOutput.%J.txt 
+ 
+Rscript sample_code.R
+-------------------------------
+```
 
-### Monitoring and evaluating jobs
+Once the file has been created, we submit the job to the `XX` quede using the `bsub` command:
 
+```{r, eval=FALSE}
+> bsub < job_script.sh
+```
+
+#### Other job-processing LSF commands
+
+* bjobs: lists currents jobs.
+* bhist: lists older jobs.
+* lsload: status of cluster nodes.
+* bqueues: status of cluster nodes.
+* bhpart: shows current user priorities.
+* bkill <jobid>: stops the current job.
 
 
 ## Sources
 
 - Boehme, C. and Ehlers, T. (2018) Using the GWDG Scientiﬁc Compute Cluster - An Introduction. Goettingen: GWDG. [[link]](https://info.gwdg.de/docs/lib/exe/fetch.php?media=en:services:scientific_compute_cluster:parallelkurs.pdf)
+- GWDG/DOCS: Running Jobs [[link]](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)
 - MPIDR IT Wiki: *how to access the GWDG compute cluster*
 - MPIDR IT Wiki: *Parallel computing examples in R at GWDG*
 
+## Next on...
+
+Continue to the Second Part of the Hand-on lab by clicking [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md).
