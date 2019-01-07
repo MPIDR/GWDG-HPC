@@ -380,7 +380,7 @@ Rscript sample_code.R
 -------------------------------
 ```
 
-Once the file has been created, we will submit the job to the `mpi` quede using the `bsub` command:
+Once the file has been created, we submit the job to the `XX` quede using the `bsub` command:
 
 ``` r
 > bsub < job_script.sh
