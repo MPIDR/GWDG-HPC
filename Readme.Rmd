@@ -25,7 +25,7 @@ Since the GWDG server uses Ubuntu (16.04.5 LTS), we cannot use Putty for this. W
 
 1. In the the Putty terminal, type: 
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 ssh gwdu102.gwdg.de
 
 The authenticity of host ’gwdu101.gwdg.de (134.76.8.101)’ can’t be established.
@@ -40,7 +40,7 @@ Are you sure you want to continue connecting (yes/no)?
 
 Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster. If you see something like this, you are now ready to write Linux commands in the terminal:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 gwdu102:5 10:37:08 ~ >
 ```
 
@@ -71,18 +71,18 @@ These are some useful Linux commands that we will use in the next section to cre
 
 By default, the cluster operates in German. You can check this by typing:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 echo $LANG
 ```
 You can change this for the current session:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 export LANG=en_US.UTF-8
 ```
 
 For a permanent solution, add the command to the `.profile` file with:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 echo ’export LANG=en_US.UTF-8’ >> ~/.profile
 ```
 
@@ -90,14 +90,14 @@ echo ’export LANG=en_US.UTF-8’ >> ~/.profile
 
 To list the files in your current directory, type `ls`
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 ls
 bin exercises familinx intel Mail
 ```
 
 To see more details, type `ls -la'
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 ls -la
 
 drwx------   2 d.alburezgutierrez MRDF     0 Sep 25 10:42 bin
@@ -127,7 +127,7 @@ The first character indicates the special permission flag, that can either be `d
 
 New files and directories are created by default with the following permission settings: `-rw-------`, meaning that only the owner can read and write. To alter file permissions we can use the `chmod` command. The basic usage is:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 chmod {options} filename
 ```
 
@@ -148,14 +148,14 @@ There are two ways of changing permissions: by specifying the `{options}` with n
 
 Let's see an exmaple. First we will create an empty directory, check it's current permission settings, and then edit these to make the directory 'ready-only' (i.e. remove 'write' permissions). 
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 mkdir per_test
 ls -l
 ```
 
 This will show the current permission settings, giving full control over the directory to the user:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 ...
 drwx------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 ...
@@ -163,7 +163,7 @@ drwx------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 
 As an exercise, we will create `file1` within our new directory `per_test` and save some text to it:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 cd per_test
 touch file1
 echo GWDG cluster workshop >> file1
@@ -173,7 +173,7 @@ cd ..
 
 To remove the 'write' permissions of the directory, simply type:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 chmod u-w per_test
 ls -l
 
@@ -184,7 +184,7 @@ dr-x------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 
 It is now impossible to create new files within `per_test` as we did before:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 touch file_error /per_test
 
 touch: cannot touch ‘/per_test’: Permission denied
@@ -192,7 +192,7 @@ touch: cannot touch ‘/per_test’: Permission denied
 
 However, we can still edit the existing `file1`:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 echo This is a new line >> per_test/file1
 cat per_test/file1
 
@@ -202,7 +202,7 @@ This is a new line
 
 By displaying the content of the directory `per_test` we can see that the permission changes were not inherited to `file1`. This behaviour can be changed with the `-R` (recursive) option, but this is generally not advised. Note that the 'execute' (`x`) permission is needed to access the directory, as we will do now.
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 ls -l per_test
 
 -rw------- 1 d.alburezgutierrez MRDF 0 Jan  4 12:59 file1
@@ -216,20 +216,20 @@ The terminal is the only way of interacting with the GWDG cluster. Graphical Use
 
 In this tutorial we will use `nano`. To run it, simply type `nano {filename}` on the terminal. The `{filename}` can be omitted if you want to create a new file from within nano. Let's try it out.
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 touch test
 nano test
 ```
 Write some text to save in your file and press `Ctrl`+`x` to exit (and save). We can now check that the changes were saved by printing the file:
 
-```{bash, eval = F}
+```{r, engine = 'bash', eval = FALSE}
 cat test
 Hello World!
 ```
 
 You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
 
-![](nano_help.png)
+![](resources/nano_help.png)
 
 ## File transfer with WinSCP
 
@@ -266,7 +266,7 @@ The batch system distributes the processes across job slots, and matches the job
 
 It is also necessary to know how the cluster is structured:
 
-![](GWDGarchitecture.PNG)
+![](resources/GWDGarchitecture.PNG)
 
 Source: [GWDG documentation)[https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs]
 
@@ -293,7 +293,7 @@ Job scripts are shell scripts with special comment sections (`#BSUB`) that force
 
 A typical job script looks something like this:
 
-```{r, eval=FALSE}
+```{r, engine = 'bash', eval = FALSE}
 #!/bin/sh 
 #BSUB -N 
 #BSUB -u <email address>
@@ -308,7 +308,7 @@ A typical job script looks something like this:
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 
-```{r, eval=FALSE}
+```{r, engine = 'bash', eval = FALSE}
 bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 ```
 
@@ -333,7 +333,7 @@ All the parameters of `bsub` can be specified via the terminal but this results 
 
 In this example, we will submit a simple R script to the `XX` queue of the cluster. We first create the `sample_code.R` using `nano` (copy and paste the R commands).
 
-```{r, eval=FALSE}
+```{r, engine = 'bash', eval = FALSE}
 nano sample_code.R
 
 --Copy and paste this text-------
@@ -345,7 +345,7 @@ print(head(airquality, 6))
 
 We now create a simple job script. Edit the text below before copying and pasting it. Note that the `sample_code.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
 
-```{r, eval=FALSE}
+```{r, engine = 'bash', eval = FALSE}
 > nano job_script.sh
 
 --Copy and paste this text-------
@@ -360,8 +360,8 @@ Rscript sample_code.R
 
 Once the file has been created, we submit the job to the `XX` quede using the `bsub` command:
 
-```{r, eval=FALSE}
-> bsub < job_script.sh
+```{r, engine = 'bash', eval = FALSE}
+bsub < job_script.sh
 ```
 
 #### Other job-processing LSF commands
@@ -383,4 +383,4 @@ Once the file has been created, we submit the job to the `XX` quede using the `b
 
 ## Next on...
 
-Continue to the Second Part of the Hand-on lab by clicking [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md).
+Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hand-on lab!

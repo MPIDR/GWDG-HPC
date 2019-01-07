@@ -249,7 +249,7 @@ Hello World!
 
 You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
 
-![](nano_help.png)
+![](resources/nano_help.png)
 
 File transfer with WinSCP
 -------------------------
@@ -288,7 +288,7 @@ The batch system distributes the processes across job slots, and matches the job
 
 It is also necessary to know how the cluster is structured:
 
-![](GWDGarchitecture.PNG)
+![](resources/GWDGarchitecture.PNG)
 
 Source: \[GWDG documentation)\[<https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs>\]
 
@@ -315,7 +315,7 @@ Job scripts are shell scripts with special comment sections (`#BSUB`) that force
 
 A typical job script looks something like this:
 
-``` r
+``` bash
 #!/bin/sh 
 #BSUB -N 
 #BSUB -u <email address>
@@ -330,7 +330,7 @@ A typical job script looks something like this:
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 
-``` r
+``` bash
 bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 ```
 
@@ -355,7 +355,7 @@ All the parameters of `bsub` can be specified via the terminal but this results 
 
 In this example, we will submit a simple R script to the `XX` queue of the cluster. We first create the `sample_code.R` using `nano` (copy and paste the R commands).
 
-``` r
+``` bash
 nano sample_code.R
 
 --Copy and paste this text-------
@@ -367,7 +367,7 @@ print(head(airquality, 6))
 
 We now create a simple job script. Edit the text below before copying and pasting it. Note that the `sample_code.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
 
-``` r
+``` bash
 > nano job_script.sh
 
 --Copy and paste this text-------
@@ -382,8 +382,8 @@ Rscript sample_code.R
 
 Once the file has been created, we submit the job to the `XX` quede using the `bsub` command:
 
-``` r
-> bsub < job_script.sh
+``` bash
+bsub < job_script.sh
 ```
 
 #### Other job-processing LSF commands
@@ -406,4 +406,4 @@ Sources
 Next on...
 ----------
 
-Continue to the Second Part of the Hand-on lab by clicking [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md).
+Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hand-on lab!
