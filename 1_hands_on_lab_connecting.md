@@ -4,13 +4,15 @@ Hands-on Lab part 1
 -   [Connecting to the cluster using Windows](#connecting-to-the-cluster-using-windows)
     -   [Connect to the GWDG network](#connect-to-the-gwdg-network)
     -   [ssh to a frontend](#ssh-to-a-frontend)
+-   [Working with files and directories](#working-with-files-and-directories)
     -   [Basic Linux commans - a refresher](#basic-linux-commans---a-refresher)
+    -   [Changing language to English](#changing-language-to-english)
     -   [Exploring and modifying directories](#exploring-and-modifying-directories)
     -   [Permission settings](#permission-settings)
-    -   [Working with files](#working-with-files)
-    -   [Changing language to English](#changing-language-to-english)
     -   [Editing text files from the terminal](#editing-text-files-from-the-terminal)
-    -   [File transfer with WinSCP](#file-transfer-with-winscp)
+-   [File transfer with WinSCP](#file-transfer-with-winscp)
+    -   [In Putty](#in-putty)
+    -   [In WinSCP](#in-winscp)
 -   [The queue system](#the-queue-system)
     -   [Submitting jobs to the cluster](#submitting-jobs-to-the-cluster)
     -   [Monitoring and evaluating jobs](#monitoring-and-evaluating-jobs)
@@ -56,7 +58,49 @@ Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster. If you see some
 gwdu102:5 10:37:08 ~ >
 ```
 
+Working with files and directories
+----------------------------------
+
 ### Basic Linux commans - a refresher
+
+These are some useful Linux commands that we will use in the next section to create, explore, and edit files from the terminal:
+
+| Command       | Description                              |
+|---------------|------------------------------------------|
+| pwd           | show current directory                   |
+| cd            | change directory                         |
+| top           | display processes as a sorted list       |
+| ps            | display current process                  |
+| touch         | create file                              |
+| cat           | print file content                       |
+| cp            | copy file                                |
+| rm            | remove file                              |
+| mv            | move file                                |
+| mkdir         | new directory                            |
+| rmdir         | remove directory                         |
+| ln            | create (hard or symbolic) link to a file |
+| df (-h) (-hl) | show disk space                          |
+| chmod         | change file attributes                   |
+
+### Changing language to English
+
+By default, the cluster operates in German. You can check this by typing:
+
+``` bash
+echo $LANG
+```
+
+You can change this for the current session:
+
+``` bash
+export LANG=en_US.UTF-8
+```
+
+For a permanent solution, add the command to the `.profile` file with:
+
+``` bash
+echo ’export LANG=en_US.UTF-8’ >> ~/.profile
+```
 
 ### Exploring and modifying directories
 
@@ -122,9 +166,6 @@ Let's see an exmaple. First we will create an empty directory, check it's curren
 
 ``` bash
 mkdir per_test
-cd per_test
-touch file
-cd ..
 ls -l
 ```
 
@@ -136,18 +177,46 @@ drwx------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 ...
 ```
 
-To remove the 'write' permissions, simply type:
+As an exercise, we will create `file1` within our new directory `per_test` and save some text to it:
+
+``` bash
+cd per_test
+touch file1
+echo GWDG cluster workshop >> file1
+ls -l
+cd ..
+```
+
+To remove the 'write' permissions of the directory, simply type:
 
 ``` bash
 chmod u-w per_test
 ls -l
 
 ...
-dr-------- 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
+dr-x------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 ...
 ```
 
-Note that the 'execute' permission is needed to access the directory, as we will do now. By displaying the content of the directory `per_test` we can see that the permission changes were not inherited to `file1`. This behaviour can be changed with the `-R` (recursive) option, although this is generally not advised.
+It is now impossible to create new files within `per_test` as we did before:
+
+``` bash
+touch file_error /per_test
+
+touch: cannot touch ‘/per_test’: Permission denied
+```
+
+However, we can still edit the existing `file1`:
+
+``` bash
+echo This is a new line >> per_test/file1
+cat per_test/file1
+
+GWDG cluster workshop
+This is a new line
+```
+
+By displaying the content of the directory `per_test` we can see that the permission changes were not inherited to `file1`. This behaviour can be changed with the `-R` (recursive) option, but this is generally not advised. Note that the 'execute' (`x`) permission is needed to access the directory, as we will do now.
 
 ``` bash
 ls -l per_test
@@ -155,60 +224,36 @@ ls -l per_test
 -rw------- 1 d.alburezgutierrez MRDF 0 Jan  4 12:59 file1
 ```
 
-### Working with files
-
-In Unix and Linux OS, everything is a file.
-
-Some useful commands are:
-
-| command       | description                              |
-|---------------|------------------------------------------|
-| pwd           | show current directory                   |
-| cd            | change directory                         |
-| top           | display processes as a sorted list       |
-| ps            | display current process                  |
-| touch         | create file                              |
-| cat           | print file content                       |
-| cp            | copy file                                |
-| rm            | remove file                              |
-| mv            | move file                                |
-| mkdir         | new directory                            |
-| rmdir         | remove directory                         |
-| ln            | create (hard or symbolic) link to a file |
-| df (-h) (-hl) | show disk space                          |
-| chmod         | change file attributes                   |
-
-### Changing language to English
-
-``` bash
-export LANG=en_US.UTF-8
-```
+Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's N: drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
 
 ### Editing text files from the terminal
 
-The terminal is the only way of interacting with the GWDG cluste. This means that Graphical User Interface (GUI) are (with a few exceptions) not available. These text editors that can be launched within the terminal: `vi`, `mcedit`, `joe`, `nano`.
+The terminal is the only way of interacting with the GWDG cluster. Graphical User Interface (GUI) are, with a few exceptions, not available. Text files can be edited from within the terminal using editors such as: `vi`, `mcedit`, `joe`, or `nano`.
 
-In this tutorial we will use `nano`. To run it, simply type `nano {filename}` on the terminal. The `{filename}` can be omitted if you wnat to create a new file from within nano. Let's try it out.
+In this tutorial we will use `nano`. To run it, simply type `nano {filename}` on the terminal. The `{filename}` can be omitted if you want to create a new file from within nano. Let's try it out.
 
 ``` bash
 touch test
 nano test
 ```
 
-Write something to save in your file, for example the unimaginative: 'Hello world!', and press Ctrl+x to exit (and save). We can now check that the changes were saved by printing the file:
+Write some text to save in your file and press Ctrl+x to exit (and save). We can now check that the changes were saved by printing the file:
 
 ``` bash
 cat test
 Hello World!
 ```
 
-### File transfer with WinSCP
+File transfer with WinSCP
+-------------------------
 
 In this section we will learn how to upload files to the cluster with an SCP client for Windows. WinSCP isan open-source client available from the internet and MPIDR intranet.
 
-This is a two-step processs - please note that if you skip any of the steps, it will not work. \#\#\#\# In Putty
+This is a two-step processs - please note that if you skip any of the steps, it will not work.
 
-We need to establish a new ssh connectino to the cluster that will allow us to transfer files.
+#### In Putty
+
+We first need to establish a new ssh connectino to the cluster that will allow us to transfer files.
 
 1.  Open Putty and change the following settings
 2.  Host Name: `transfer.gwdg.de`; Port: `22`; Connection Type: `SSH`
