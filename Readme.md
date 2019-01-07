@@ -9,7 +9,7 @@ Hands-on lab (First Part)
     -   [Changing language to English](#changing-language-to-english)
     -   [Exploring and modifying directories](#exploring-and-modifying-directories)
     -   [Permission settings](#permission-settings)
-    -   [Editing text files from the terminal](#editing-text-files-from-the-terminal)
+    -   [Editing text files from the terminal with `nano`](#editing-text-files-from-the-terminal-with-nano)
 -   [File transfer with WinSCP](#file-transfer-with-winscp)
     -   [In Putty](#in-putty)
     -   [In WinSCP](#in-winscp)
@@ -17,6 +17,7 @@ Hands-on lab (First Part)
     -   [File storage in the cluster](#file-storage-in-the-cluster)
     -   [Processing jobs on the cluster](#processing-jobs-on-the-cluster)
     -   [a. The job script](#a.-the-job-script)
+    -   [b. Submitting job scripts with the `bsub` command](#b.-submitting-job-scripts-with-the-bsub-command)
     -   [Example: submitting jobs to the queue](#example-submitting-jobs-to-the-queue)
 -   [Sources](#sources)
 -   [Next on...](#next-on...)
@@ -229,7 +230,7 @@ ls -l per_test
 
 Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's `N:` drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
 
-### Editing text files from the terminal
+### Editing text files from the terminal with `nano`
 
 The terminal is the only way of interacting with the GWDG cluster. Graphical User Interface (GUI) are, with a few exceptions, not available. Text files can be edited from within the terminal using editors such as: `vi`, `mcedit`, `joe`, or `nano`.
 
@@ -326,7 +327,7 @@ A typical job script looks something like this:
 <Command to execute>
 ```
 
-#### b. Submitting job scripts with the `bsub` command
+### b. Submitting job scripts with the `bsub` command
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 

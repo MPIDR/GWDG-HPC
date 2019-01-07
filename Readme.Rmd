@@ -210,7 +210,7 @@ ls -l per_test
 
 Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's `N:` drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
 
-### Editing text files from the terminal
+### Editing text files from the terminal with `nano`
 
 The terminal is the only way of interacting with the GWDG cluster. Graphical User Interface (GUI) are, with a few exceptions, not available. Text files can be edited from within the terminal using editors such as: `vi`, `mcedit`, `joe`, or `nano`. 
 
@@ -304,7 +304,7 @@ A typical job script looks something like this:
 <Command to execute>
 ```
 
-#### b. Submitting job scripts with the `bsub` command
+### b. Submitting job scripts with the `bsub` command
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 
