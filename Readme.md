@@ -290,7 +290,7 @@ It is also necessary to know how the cluster is structured:
 
 ![](resources/GWDGarchitecture.PNG)
 
-Source: \[GWDG documentation)\[<https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs>\]
+Source: \[GWDG documentation)(<https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs>)
 
 ### File storage in the cluster
 
@@ -368,7 +368,7 @@ print(head(airquality, 6))
 We now create a simple job script. Edit the text below before copying and pasting it. Note that the `sample_code.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
 
 ``` bash
-> nano job_script.sh
+nano job_script.sh
 
 --Copy and paste this text-------
 #!/bin/sh 
@@ -406,4 +406,4 @@ Sources
 Next on...
 ----------
 
-Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hand-on lab!
+Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hands-on lab!
