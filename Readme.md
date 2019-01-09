@@ -13,14 +13,15 @@ Hands-on lab (First Part)
 -   [File transfer with WinSCP](#file-transfer-with-winscp)
     -   [In Putty](#in-putty)
     -   [In WinSCP](#in-winscp)
--   [The cluster and queue system](#the-cluster-and-queue-system)
     -   [File storage in the cluster](#file-storage-in-the-cluster)
+-   [The cluster and queue system](#the-cluster-and-queue-system)
     -   [Processing jobs on the cluster](#processing-jobs-on-the-cluster)
     -   [a. The job script](#a.-the-job-script)
-    -   [b. Submitting job scripts with the `bsub` command](#b.-submitting-job-scripts-with-the-bsub-command)
+    -   [b. Submitting (non-parallel) job scripts with the `bsub` command](#b.-submitting-non-parallel-job-scripts-with-the-bsub-command)
     -   [Example: submitting jobs to the queue](#example-submitting-jobs-to-the-queue)
--   [Sources](#sources)
+-   [One last thing before lunch](#one-last-thing-before-lunch)
 -   [Next on...](#next-on...)
+-   [Sources](#sources)
 
 Connecting to the cluster using Windows
 ---------------------------------------
@@ -103,7 +104,7 @@ export LANG=en_US.UTF-8
 For a permanent solution, add the command to the `.profile` file with:
 
 ``` bash
-echo ’export LANG=en_US.UTF-8’ >> ~/.profile
+echo 'export LANG=en_US.UTF-8’ >> ~/.profile
 ```
 
 ### Exploring and modifying directories
@@ -129,9 +130,9 @@ drwx------   2 d.alburezgutierrez MRDF     0 Sep 25 10:42 Mail
 
 ### Permission settings
 
-The previous command showed a series of *persmission flags* associated with each file in our current directory.
+The previous command showed a series of permission settings associated with each file in our current directory.
 
-The first character indicates the special permission flag, that can either be `d` for directory, `-` for a normal ﬁle, or `l` for a symlink. We will not focus on this now. More important are the other positions:
+The first character indicates the special permission flag. This can be `d` for directory, `-` for a normal ﬁle without special persmission, `l` for a symlink, etc.[1] We will focus on the characters in the other positions:
 
 | Position | Permission | User type         |
 |----------|------------|-------------------|
@@ -151,22 +152,21 @@ New files and directories are created by default with the following permission s
 chmod {options} filename
 ```
 
-There are two ways of changing permissions: by specifying the `{options}` with numbers or with letters. In this tutorial we will only cover letters, as this is more intuitive. The GWDG presentation referenced at the end of this document provides a more detailed description of the use of `chmod` for alterning permission settings.
+There are two ways of changing permissions: by specifying the `{options}` with numbers or with letters. In this tutorial we will only cover letters, as this is more intuitive. The GWDG presentation referenced at the end of this document provides a more detailed description of the use of `chmod` for altering permission settings.
 
-| chmod Options | Definition        |
-|---------------|-------------------|
-| u             | owner             |
-| g             | group             |
-| o             | other             |
-| a             | all               |
-| x             | execute           |
-| w             | write             |
-| r             | read              |
-| +             | add permission    |
-| -             | remove permission |
-| =             | set permission    |
+| chmod Options | Definition                          |
+|---------------|-------------------------------------|
+| u             | owner of the file                   |
+| g             | user group that the file belongs to |
+| o             | other users                         |
+| a             | all of the above                    |
+| x             | execute                             |
+| w             | write                               |
+| r             | read                                |
+| +             | add permission                      |
+| -             | remove permission                   |
 
-Let's see an exmaple. First we will create an empty directory, check it's current permission settings, and then edit these to make the directory 'ready-only' (i.e. remove 'write' permissions).
+Let's see an example. First we will create an empty directory, check it's current permission settings, and then edit these to make the directory 'ready-only' (i.e. remove 'write' permissions).
 
 ``` bash
 mkdir per_test
@@ -181,7 +181,7 @@ drwx------ 2 d.alburezgutierrez MRDF  1 Jan  4 12:59 per_test
 ...
 ```
 
-As an exercise, we will create `file1` within our new directory `per_test` and save some text to it:
+As an exercise, we will create `file1` within our new directory `per_test` and save some text to it. (Note that the command `echo` appends the text "GWDG cluster workshop" as a new line in `file1` using the `>>` operator.)
 
 ``` bash
 cd per_test
@@ -255,19 +255,19 @@ You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
 File transfer with WinSCP
 -------------------------
 
-In this section we will learn how to upload files to the cluster with an SCP client for Windows. WinSCP isan open-source client available from the internet and MPIDR intranet.
+In this section we will learn how to upload files to the cluster with an SCP client for Windows. WinSCP is an open-source client available from the internet and MPIDR intranet.
 
-This is a two-step processs - please note that if you skip any of the steps, it will not work.
+This is a two-step process - please note that if you skip any of the steps, it will not work.
 
 #### In Putty
 
-We first need to establish a new ssh connectino to the cluster that will allow us to transfer files.
+We first need to establish a new ssh connection to the cluster that will allow us to transfer files (you need to end the previous connection by closing Putty).
 
 1.  Open Putty and change the following settings
 2.  Host Name: `transfer.gwdg.de`; Port: `22`; Connection Type: `SSH`
 3.  **Connection** | **Data**: Auto-login username: **firstname.lastname**
 4.  **Connection** | **SSH** | **Tunnels**: Source port `4022`, Destination: `transfer-scc.gwdg.de:22`
-5.  Save session and open it (MPIDR password)
+5.  Save the session and open it using you MPIDR password
 
 #### In WinSCP
 
@@ -278,20 +278,7 @@ Create a new connection with the following settings:
 
 To change to the /scratch file system, click in the remote windows (right), press Ctrl+O, enter /scratch and press Enter.
 
-To create a subfolder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
-
-The cluster and queue system
-----------------------------
-
-For submitting jobs to the cluster it is necessary to create a `shell file` using a `batch system` through LSF commands. So, the GWDG cluster is operated by the LSF platform, which is operated by shell commands on the frontends. The **frontends** are special nodes (gwdu101, gwudu102, and gwdu103) provided to interact with the cluster via shell commands.
-
-The batch system distributes the processes across job slots, and matches the job's requirements to the capabilities of the job slots. Once sufficient suitable job slots are found, the job is started. LSF considers jobs to be started in the order of their priority.
-
-It is also necessary to know how the cluster is structured:
-
-![](resources/GWDGarchitecture.PNG)
-
-Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)
+To create a sub-folder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
 
 ### File storage in the cluster
 
@@ -301,9 +288,34 @@ Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:servic
 
 -   /scratch2: this is the shared scratch space, available on *dfa, dsu, dge*, and *dmp* nodes, and on the frontend *gwdu103*. For being sure of having a node with access to shared */scratch2* the command `-R scratch2` must be written in the shell file.
 
+#### Exercise: uploading scripts
+
+We will now upload the scripts that you will use in the second part of the lab to your `$HOME` directory. The files are saved in the `N:` drive.
+
+Transferring files from a local directory to the cluster using WinSCP is easy:
+
+1.  Create a new directory in our home directory called `lab_files`. You can edit permission setting at this stage (see image below)
+2.  On the left panel of WinSCP, navigate to `N:\HPC_workshop\lab_files`
+3.  Select the files you want to upload, and drag and drop them on the newly created `lab_files` directory in the cluster (right-hand-side panel)
+
+![](resources/WinSCP1.png)
+
+The cluster and queue system
+----------------------------
+
+For submitting jobs to the cluster it is necessary to create a `shell file` using a `batch system` through LSF commands. So, the GWDG cluster is operated by the LSF platform, which is operated by shell commands on the frontends. The **frontends** are special nodes (gwdu101, gwdu102, and gwdu103) provided to interact with the cluster via shell commands.
+
+The batch system distributes the processes across job slots, and matches the job's requirements to the capabilities of the job slots. Once sufficient suitable job slots are found, the job is started. LSF considers jobs to be started in the order of their priority.
+
+It is also necessary to know how the cluster is structured:
+
+![](resources/GWDGarchitecture.PNG)
+
+Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs).
+
 ### Processing jobs on the cluster
 
-Jobs are usually not run *interactively* in the GWDG cluster. Compute-intensive jobs are submitted to specific *queues* of the cluster. These jobs are not processed immediately, but rather *stand in the queue* until the necessary resources are made available for the cluster to run them (for more info, see the [official documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)).
+Jobs are usually not run *interactively* in the GWDG cluster. Computer-intensive jobs are submitted to specific *queues* of the cluster. These jobs are not processed immediately, but rather *stand in the queue* until the necessary resources are made available for the cluster to run them (for more info, see the [official documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)).
 
 Submitting a job is a two-step process consisting of
 
@@ -312,7 +324,7 @@ Submitting a job is a two-step process consisting of
 
 ### a. The job script
 
-Job scripts are shell scripts with special comment sections (`#BSUB`) that force each line to be interpreted as an option of `bsub`. The job files can be created through either the linux terminal using the editor *nano* or Notepad++ in Windows.
+Job scripts are shell scripts with special comment sections (`#BSUB`) that force each line to be interpreted as an option of `bsub`. The job files can be created through either the Linux terminal using the editor *nano* or Notepad++ in Windows.
 
 A typical job script looks something like this:
 
@@ -327,7 +339,7 @@ A typical job script looks something like this:
 <Command to execute>
 ```
 
-### b. Submitting job scripts with the `bsub` command
+### b. Submitting (non-parallel) job scripts with the `bsub` command
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 
@@ -338,54 +350,51 @@ bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 #### Some `bsub` parameters
 
 -   -N: sends the job report to you by email when the job finishes.
+-   -q: select queue to submit the job to
 -   -u: sends the email to the specified email destination.
 -   -W: sets the maximum runtime limit of the job. If this time is exceeded the job is killed.
--   -o: appends the standard output of the job to the specified file path.
+-   -o: appends the standard output of the job to the specified file path. (`%J` is a place holder for the job ID)
 
-All the parameters of `bsub` can be specified via the terminal but this results in very long commands. Job scripts can be used insted to specify all relevant parameters of `bsub`.
-
-#### Specifying node properties with *-R*
-
-`-R` runs the job on a host that meets the specified resource requirements. Some of its basic parameters are:
-
--   span\[hosts=1\]: this puts all processes on one host.
--   span\[ptile=&lt; x &gt;\]: *x* denotes the exact number of job slots to be used on each host. If the total process number is not divisible by *x*.
--   scratch(2): the node must have access to *scratch(2)*.
+All the parameters of `bsub` can be specified via the terminal but this results in very long commands. Job scripts can be used instead to specify all relevant parameters of `bsub`.
 
 ### Example: submitting jobs to the queue
 
-In this example, we will submit a simple R script to the `XX` queue of the cluster. We first create the `sample_code.R` using `nano` (copy and paste the R commands).
+In this example, we will submit a simple R script to the `mpi` queue of the cluster using four gwdg nodes reserved for this workshop (the `#BSUB -U workshop` line in the script below).
+
+We will use the R script `1_exercise.R` in the newly created `lab_files` directory. The script prints the header lines of the `airquality` dataset. Display the content of the script using the `cat` command:
 
 ``` bash
-nano sample_code.R
+cd lab_files
+cat 1_exercise.R
 
---Copy and paste this text-------
 #!/usr/bin/env r 
 data("airquality")
 print(head(airquality, 6))
--------------------------------
 ```
 
-We now create a simple job script. Edit the text below before copying and pasting it. Note that the `sample_code.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
+We now create a simple job script using `nano`. Note that `1_exercise.R` is preceded by the `Rscript` command, which is used to run R scripts non-interactively.
 
 ``` bash
 nano job_script.sh
 
 --Copy and paste this text-------
 #!/bin/sh 
-#BSUB -N 
-#BSUB -q mpi 
+
+#BSUB -q mpi
+#BSUB -U workshop
 #BSUB -o NameOutput.%J.txt 
  
-Rscript sample_code.R
+Rscript 1_exercise.R
 -------------------------------
 ```
 
-Once the file has been created, we submit the job to the `XX` quede using the `bsub` command:
+Once the job script has been created, we submit the job to the queue using the `bsub` command:
 
 ``` bash
 bsub < job_script.sh
 ```
+
+Use `ls` and `cat` to explore the output file created in the directory of execution.
 
 #### Other job-processing LSF commands
 
@@ -394,7 +403,24 @@ bsub < job_script.sh
 -   lsload: status of cluster nodes.
 -   bqueues: status of cluster nodes.
 -   bhpart: shows current user priorities.
--   bkill <jobid>: stops the current job.
+-   bkill <jobid>: stops the current job
+
+One last thing before lunch
+---------------------------
+
+We will install the `doParallel` R package from the terminal. For this, start an interactive R session by typing `R` into the terminal. Then select a mirror and install the package:
+
+``` bash
+install.packages("doParallel")
+library(doParallel)
+```
+
+Off to lunch!
+
+Next on...
+----------
+
+Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hands-on lab!
 
 Sources
 -------
@@ -404,7 +430,4 @@ Sources
 -   MPIDR IT Wiki: *how to access the GWDG compute cluster*
 -   MPIDR IT Wiki: *Parallel computing examples in R at GWDG*
 
-Next on...
-----------
-
-Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hands-on lab!
+[1] For more information on permission settings in Linux, see [this link](https://wiki.archlinux.org/index.php/File_permissions_and_attributes) and [this one](http://linux-training.be/funhtml/ch33.html) regarding advanced permission settings.
