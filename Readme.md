@@ -1,4 +1,4 @@
-Hands-on lab (First Part)
+Tutorial for lab session of MPIDR GWDG computer cluster workshop
 ================
 
 
@@ -11,6 +11,6 @@ You can get additional help from the [GWDG documentation](https://info.gwdg.de/d
 
 **Contact**
 
-Diego Alburez <alburezgutierrez\[at\]demogr.mpg.de>
+Diego Alburez: alburezgutierrez\[at\]demogr.mpg.de
 
-Sofia Gil gil\[at\]demogr.mpg.de
+Sofia Gil: gil\[at\]demogr.mpg.de
