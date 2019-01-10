@@ -5,9 +5,9 @@ output:
     toc: true
 ---
 
-## 1. Connecting to the cluster using Windows
+# 1. Connecting to the cluster using Windows
 
-### 1.1. Connect to the GWDG network
+## 1.1. Connect to the GWDG network
 
 Connecting to a GWDG frontend is a two-step process if you are working from outside the GWDG network (e.g. from the MPIDR or from home). First, you need to first establish a connection to the GWDG network. For this:
 
@@ -21,7 +21,7 @@ You are now logged into the GWDG network. *Well done!*
 
 However, you are not yet connected to any of the three frontends (gwdu101.gwdg.de/, gwdu102.gwdg.de/, or gwdu103.gwdg.de/). To do this we must open a new ssh connection. 
 
-### 1.2. ssh to a frontend
+## 1.2. ssh to a frontend
 
 Since the GWDG server uses Ubuntu (16.04.5 LTS), we cannot use Putty for this. We must establish the ssh connection "the Linux way". 
 
