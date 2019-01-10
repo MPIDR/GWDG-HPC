@@ -9,5 +9,5 @@ Welcome to the practical lab of the **Introduction to the GWDG computer cluster*
 
 You can get additional help from the [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:start) and the MPIDR IT WIKI (forthcoming).
 
-[1] alburezgutierrez\[at\]demogr.mpg.de
-[2] gil\[at\]demogr.mpg.de
+[1]: alburezgutierrez\[at\]demogr.mpg.de
+[2]: gil\[at\]demogr.mpg.de
