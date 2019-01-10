@@ -4,30 +4,29 @@ Hands-on lab (First Part)
 -   [1. Connecting to the cluster using Windows](#connecting-to-the-cluster-using-windows)
     -   [1.1. Connect to the GWDG network](#connect-to-the-gwdg-network)
     -   [1.2. ssh to a frontend](#ssh-to-a-frontend)
-    -   [2. Working with files and directories](#working-with-files-and-directories)
-        -   [2.1. Basic Linux commans - a refresher](#basic-linux-commans---a-refresher)
-        -   [2.2. \[Optional\] Changing language to English](#optional-changing-language-to-english)
-        -   [2.3. Exploring and modifying directories](#exploring-and-modifying-directories)
-        -   [2.4. Permission settings](#permission-settings)
-        -   [2.5. Editing text files from the terminal with `nano`](#editing-text-files-from-the-terminal-with-nano)
-    -   [3. File transfer with WinSCP](#file-transfer-with-winscp)
-        -   [3.1. Exercise: uploading scripts](#exercise-uploading-scripts)
-        -   [3.2. File storage in the cluster](#file-storage-in-the-cluster)
-    -   [4. The cluster and queue system](#the-cluster-and-queue-system)
-        -   [4.1. Processing jobs on the cluster](#processing-jobs-on-the-cluster)
-        -   [4.2. The job script](#the-job-script)
-        -   [4.3. Submitting (non-parallel) job scripts with the `bsub` command](#submitting-non-parallel-job-scripts-with-the-bsub-command)
-        -   [4.4. Some `bsub` parameters](#some-bsub-parameters)
-        -   [4.5. Example: submitting jobs to the queue](#example-submitting-jobs-to-the-queue)
-        -   [4.6. Other job-processing LSF commands](#other-job-processing-lsf-commands)
-    -   [5. Running the R Console from the terminal](#running-the-r-console-from-the-terminal)
-    -   [6. Sources](#sources)
+-   [2. Working with files and directories](#working-with-files-and-directories)
+    -   [2.1. Basic Linux commans - a refresher](#basic-linux-commans---a-refresher)
+    -   [2.2. \[Optional\] Changing language to English](#optional-changing-language-to-english)
+    -   [2.3. Exploring and modifying directories](#exploring-and-modifying-directories)
+    -   [2.4. Permission settings](#permission-settings)
+    -   [2.5. Editing text files from the terminal with `nano`](#editing-text-files-from-the-terminal-with-nano)
+-   [3. File transfer with WinSCP](#file-transfer-with-winscp)
+    -   [3.1. Exercise: uploading scripts](#exercise-uploading-scripts)
+    -   [3.2. File storage in the cluster](#file-storage-in-the-cluster)
+-   [4. The cluster and queue system](#the-cluster-and-queue-system)
+    -   [4.1. Processing jobs on the cluster](#processing-jobs-on-the-cluster)
+    -   [4.2. The job script](#the-job-script)
+    -   [4.3. Submitting (non-parallel) job scripts with the `bsub` command](#submitting-non-parallel-job-scripts-with-the-bsub-command)
+    -   [4.4. Some `bsub` parameters](#some-bsub-parameters)
+    -   [4.5. Example: submitting jobs to the queue](#example-submitting-jobs-to-the-queue)
+    -   [4.6. Other job-processing LSF commands](#other-job-processing-lsf-commands)
+-   [5. Running the R Console from the terminal](#running-the-r-console-from-the-terminal)
+-   [6. Sources](#sources)
 
 1. Connecting to the cluster using Windows
-==========================================
+------------------------------------------
 
-1.1. Connect to the GWDG network
---------------------------------
+### 1.1. Connect to the GWDG network
 
 Connecting to a GWDG frontend is a two-step process if you are working from outside the GWDG network (e.g. from the MPIDR or from home). First, you need to first establish a connection to the GWDG network. For this:
 
@@ -41,8 +40,7 @@ You are now logged into the GWDG network. *Well done!*
 
 However, you are not yet connected to any of the three frontends (gwdu101.gwdg.de/, gwdu102.gwdg.de/, or gwdu103.gwdg.de/). To do this we must open a new ssh connection.
 
-1.2. ssh to a frontend
-----------------------
+### 1.2. ssh to a frontend
 
 Since the GWDG server uses Ubuntu (16.04.5 LTS), we cannot use Putty for this. We must establish the ssh connection "the Linux way".
 
