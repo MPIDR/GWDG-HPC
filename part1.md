@@ -3,21 +3,8 @@ Hands-on lab (First Part)
 
 -   [1. Connecting to the cluster using Windows](#connecting-to-the-cluster-using-windows)
 -   [2. Working with files and directories](#working-with-files-and-directories)
-    -   [2.1. Basic Linux commans - a refresher](#basic-linux-commans---a-refresher)
-    -   [2.2. \[Optional\] Changing language to English](#optional-changing-language-to-english)
-    -   [2.3. Exploring and modifying directories](#exploring-and-modifying-directories)
-    -   [2.4. Permission settings](#permission-settings)
-    -   [2.5. Editing text files from the terminal with `nano`](#editing-text-files-from-the-terminal-with-nano)
 -   [3. File transfer with WinSCP](#file-transfer-with-winscp)
-    -   [3.1. Exercise: uploading scripts](#exercise-uploading-scripts)
-    -   [3.2. File storage in the cluster](#file-storage-in-the-cluster)
 -   [4. The cluster and queue system](#the-cluster-and-queue-system)
-    -   [4.1. Processing jobs on the cluster](#processing-jobs-on-the-cluster)
-    -   [4.2. The job script](#the-job-script)
-    -   [4.3. Submitting (non-parallel) job scripts with the `bsub` command](#submitting-non-parallel-job-scripts-with-the-bsub-command)
-    -   [4.4. Some `bsub` parameters](#some-bsub-parameters)
-    -   [4.5. Example: submitting jobs to the queue](#example-submitting-jobs-to-the-queue)
-    -   [4.6. Other job-processing LSF commands](#other-job-processing-lsf-commands)
 -   [5. Running the R Console from the terminal](#running-the-r-console-from-the-terminal)
 -   [6. Sources](#sources)
 
@@ -57,10 +44,9 @@ Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster! If you see some
 gwdu102:5 10:37:08 ~ >
 ```
 
-2. Working with files and directories
--------------------------------------
+### 2. Working with files and directories
 
-### 2.1. Basic Linux commans - a refresher
+#### 2.1. Basic Linux commans - a refresher
 
 These are some useful Linux commands that we will use in the next section to create, explore, and edit files from the terminal:
 
@@ -81,7 +67,7 @@ These are some useful Linux commands that we will use in the next section to cre
 | df (-h) (-hl) | show disk space                          |
 | chmod         | change file attributes                   |
 
-### 2.2. \[Optional\] Changing language to English
+#### 2.2. \[Optional\] Changing language to English
 
 By default, the cluster operates in German. You can check the language settings by typing:
 
@@ -101,7 +87,7 @@ For a permanent solution, add the command to the `.profile` file with:
 echo 'export LANG=en_US.UTF-8’ >> ~/.profile
 ```
 
-### 2.3. Exploring and modifying directories
+#### 2.3. Exploring and modifying directories
 
 To list the files in your current directory, type `ls`
 
@@ -122,7 +108,7 @@ drwx------   3 d.alburezgutierrez MRDF     0 Oct 23 12:02 intel
 drwx------   2 d.alburezgutierrez MRDF     0 Sep 25 10:42 Mail
 ```
 
-### 2.4. Permission settings
+#### 2.4. Permission settings
 
 The previous command showed a series of permission settings associated with each file in our current directory.
 
@@ -222,7 +208,7 @@ By displaying the content of the directory `per_test` we can see that the permis
 <!-- ``` -->
 Permissions are useful for granting and restricting access to specific directories and files in a way that will be familiar to users of the MPIDR's `N:` drive. However, note that the cluster administrators have access to all directories stored in the cluster. Please do not store sensitive information in the cluster without first getting in touch with the GDGW security team.
 
-### 2.5. Editing text files from the terminal with `nano`
+#### 2.5. Editing text files from the terminal with `nano`
 
 The terminal is the only way of interacting with the GWDG cluster. Graphical User Interface (GUI) are, with a few exceptions, not available. Text files can be edited from within the terminal using editors such as: `vi`, `mcedit`, `joe`, or `nano`.
 
@@ -244,8 +230,7 @@ You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
 
 ![](resources/nano_help.PNG)
 
-3. File transfer with WinSCP
-----------------------------
+### 3. File transfer with WinSCP
 
 In this section we will learn how to upload files to the cluster with an SCP client for Windows. WinSCP is an open-source client available from the internet and MPIDR intranet.
 
@@ -258,7 +243,7 @@ First we must create a new WinSCP session. TO do this:
 
 To create a sub-folder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
 
-### 3.1. Exercise: uploading scripts
+#### 3.1. Exercise: uploading scripts
 
 We will now upload the scripts that you will use in the second part of the lab to your `$HOME` directory. The files are saved in the `N:` drive.
 
@@ -270,7 +255,7 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 
 ![](resources/WinSCP1.PNG)
 
-### 3.2. File storage in the cluster
+#### 3.2. File storage in the cluster
 
 -   $HOME: our home directory is available everywhere, permanent, and comes with backup, but it is comparatively slow.
 
@@ -278,8 +263,7 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 
 -   /scratch2: this is the shared scratch space, available on *dfa, dsu, dge*, and *dmp* nodes, and on the frontend *gwdu103*. For being sure of having a node with access to shared */scratch2* the command `-R scratch2` must be written in the shell file.
 
-4. The cluster and queue system
--------------------------------
+### 4. The cluster and queue system
 
 For submitting jobs to the cluster it is necessary to create a `shell file` using a `batch system` through LSF commands. So, the GWDG cluster is operated by the LSF platform, which is operated by shell commands on the frontends. The **frontends** are special nodes (gwdu101, gwdu102, and gwdu103) provided to interact with the cluster via shell commands.
 
@@ -291,7 +275,7 @@ It is also necessary to know how the cluster is structured:
 
 Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs).
 
-### 4.1. Processing jobs on the cluster
+#### 4.1. Processing jobs on the cluster
 
 Jobs are usually not run *interactively* in the GWDG cluster. Computer-intensive jobs are submitted to specific *queues* of the cluster. These jobs are not processed immediately, but rather *stand in the queue* until the necessary resources are made available for the cluster to run them (for more info, see the [official documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)).
 
@@ -300,7 +284,7 @@ Submitting a job is a two-step process consisting of
 1.  Creating a job script
 2.  Submitting the job script to a GWDG queue for execution
 
-### 4.2. The job script
+#### 4.2. The job script
 
 Job scripts are shell scripts with special comment sections (`#BSUB`) that force each line to be interpreted as an option of `bsub`. The job files can be created through either the Linux terminal using the editor *nano* or Notepad++ in Windows.
 
@@ -317,7 +301,7 @@ A typical job script looks something like this:
 <Command to execute>
 ```
 
-### 4.3. Submitting (non-parallel) job scripts with the `bsub` command
+#### 4.3. Submitting (non-parallel) job scripts with the `bsub` command
 
 The `bsub` command submits information regarding your job to the batch system. The basic syntax:
 
@@ -325,7 +309,7 @@ The `bsub` command submits information regarding your job to the batch system. T
 bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 ```
 
-### 4.4. Some `bsub` parameters
+#### 4.4. Some `bsub` parameters
 
 -   -N: sends the job report to you by email when the job finishes.
 -   -q: select queue to submit the job to
@@ -335,7 +319,7 @@ bsub <bsub options> [mpirun.lsf] <path to program> <program parameters>
 
 All the parameters of `bsub` can be specified via the terminal but this results in very long commands. Job scripts can be used instead to specify all relevant parameters of `bsub`.
 
-### 4.5. Example: submitting jobs to the queue
+#### 4.5. Example: submitting jobs to the queue
 
 In this example, we will submit a simple R script to the `mpi` queue of the cluster using four gwdg nodes reserved for this workshop (the `#BSUB -U workshop` line in the script below).
 
@@ -374,7 +358,7 @@ bsub < job_script.sh
 
 Use `ls` and `cat` to explore the output file created in the directory of execution.
 
-### 4.6. Other job-processing LSF commands
+#### 4.6. Other job-processing LSF commands
 
 -   bjobs: lists currents jobs.
 -   bhist: lists older jobs.
@@ -383,8 +367,7 @@ Use `ls` and `cat` to explore the output file created in the directory of execut
 -   bhpart: shows current user priorities.
 -   bkill <jobid>: stops the current job
 
-5. Running the R Console from the terminal
-------------------------------------------
+### 5. Running the R Console from the terminal
 
 To start an interactive R session, type `R` into the terminal. From here, we will now install the `doParallel` R package (don't forget the `dependencies = TRUE` argument!):
 
@@ -395,8 +378,7 @@ library(doParallel)
 
 <!-- ## And after lunch... -->
 <!-- Click [here](https://github.com/Parimucyeran/Parallel_Course/blob/master/Github.md) for the Second Part of the Hands-on lab! -->
-6. Sources
-----------
+### 6. Sources
 
 -   Boehme, C. and Ehlers, T. (2018) Using the GWDG Scientiﬁc Compute Cluster - An Introduction. Goettingen: GWDG. [\[link\]](https://info.gwdg.de/docs/lib/exe/fetch.php?media=en:services:scientific_compute_cluster:parallelkurs.pdf)
 -   GWDG/DOCS: Running Jobs [\[link\]](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)
