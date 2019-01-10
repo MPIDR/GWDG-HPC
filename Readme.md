@@ -12,4 +12,5 @@ You can get additional help from the [GWDG documentation](https://info.gwdg.de/d
 **Contact**
 
 Diego Alburez <alburezgutierrez\[at\]demogr.mpg.de>
+
 Sofia Gil gil\[at\]demogr.mpg.de
