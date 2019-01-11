@@ -1,6 +1,7 @@
 Tutorial for lab session
 ================
 
+*January 2019*
 
 Welcome to the practical lab of the **MPIDR Introduction to the GWDG computer cluster** workshop! In this repository, you will find:
 
