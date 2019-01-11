@@ -3,20 +3,13 @@ Hands-on lab (Second Part)
 Sofia Gil
 January 15, 2019
 
--   [First steps for parallelizing in R](#first-steps-for-parallelizing-in-r)
-    -   [The basics](#the-basics)
-    -   [Divide and Conquer](#divide-and-conquer)
--   [Submitting R scripts into the cluster](#submitting-r-scripts-into-the-cluster)
-    -   [The basics](#the-basics-1)
-    -   [Parallel jobs](#parallel-jobs)
-    -   [Other important LSF commands](#other-important-lsf-commands)
+-   [Introduction](#introduction)
+-   [1. Writing efficient loops](#writing-efficient-loops)
+-   [2. Paralellizing](#paralellizing)
+-   [3. Submitting R scripts into the cluster](#submitting-r-scripts-into-the-cluster)
 -   [References](#references)
 
-First steps for parallelizing in R
-==================================
-
-The basics
-----------
+### Introduction
 
 It is well-known that when we are using *R* we always have to avoid **for** loops. Due to the calls that *R* does to *C* functions, therefore it is better to vectorize everything.
 
@@ -25,8 +18,8 @@ It is well-known that when we are using *R* we always have to avoid **for** loop
 rm(list=ls())
 gc()
 #>           used (Mb) gc trigger (Mb) max used (Mb)
-#> Ncells  625898 33.5    1207107 64.5  1207107 64.5
-#> Vcells 1137928  8.7    8388608 64.0  1663533 12.7
+#> Ncells  625751 33.5    1209490 64.6  1209490 64.6
+#> Vcells 1137032  8.7    8388608 64.0  1661898 12.7
 
 len<-5000000
 
@@ -45,45 +38,45 @@ system.time({
 
 system.time({c2<-a%*%b})['elapsed']
 #> elapsed 
-#>    0.05
+#>    0.03
 ```
 
 But... what should we do when the problem we are facing needs a loop? There are two options:
 
-1.  Write the loop and wait.(*Easy way*)
-2.  Paralellize. (*Fun way*)
+1.  Write the loop.
+2.  Paralellize.
 
-Imagine we want to do the Kronecker Product of *A* ⊗ *B*, that means:
+Imagine we want to do the Kronecker Product of **A** ⊗ **B**, that means:
 
-<img src="Github_files/figure-markdown_github/Kronecker.png" width="300" />
+<img src="resources/Kronecker.png" width="300" />
 
-Where *A* and *B* are matrixes.
+Where **A** and **B** are matrixes.
 
-#### Easy way
+### 1. Writing efficient loops
 
 **Memory access**: It is important to know how *R* stores matrices, i.e., by row or by column. In the specific case of *R*, all matrices (also data frames) are stored by column, given that *R* is a statistical software where the columns almost always represent variable names. This is crucial since each variable created in *R* has an **ID number**, so the compiler or the interpreter will assign specific addresses in memory at which every element of the variables (e.g. vector, matrices, data frames, lists,...) will be stored. Given that these addresses are consecutive, it will always decrease memory access time if we call them in a consecutive way.
 
-<img src="Github_files/figure-markdown_github/ColumnOriented.png" width="300" />
+<img src="resources/ColumnOriented.png" width="300" />
 
 ``` r
 
 (A<-matrix(runif(9),nrow = 3,ncol = 3))
 #>           [,1]      [,2]      [,3]
-#> [1,] 0.9611183 0.8296429 0.4385134
-#> [2,] 0.8282748 0.1126998 0.1259877
-#> [3,] 0.5347326 0.6106551 0.6310976
+#> [1,] 0.8447337 0.1981730 0.6313304
+#> [2,] 0.3113982 0.2194922 0.8971745
+#> [3,] 0.2973880 0.3904160 0.5834428
 
 for(i in 1:length(A))
   print(paste(i,A[i]))
-#> [1] "1 0.96111828298308"
-#> [1] "2 0.828274838859215"
-#> [1] "3 0.534732625121251"
-#> [1] "4 0.829642858589068"
-#> [1] "5 0.112699778983369"
-#> [1] "6 0.610655125696212"
-#> [1] "7 0.438513382570818"
-#> [1] "8 0.125987676205114"
-#> [1] "9 0.631097618956119"
+#> [1] "1 0.844733684556559"
+#> [1] "2 0.311398230725899"
+#> [1] "3 0.297388046514243"
+#> [1] "4 0.198172956006601"
+#> [1] "5 0.219492244534194"
+#> [1] "6 0.390416000969708"
+#> [1] "7 0.631330439820886"
+#> [1] "8 0.897174456622452"
+#> [1] "9 0.583442774135619"
 ```
 
 For solving with a loop this basic knowledge can help to increase the pace of the algorithm.
@@ -95,8 +88,8 @@ library(foreach)
 rm(list=ls())
 gc()
 #>           used (Mb) gc trigger  (Mb) max used (Mb)
-#> Ncells  631020 33.8    1207107  64.5  1207107 64.5
-#> Vcells 1146328  8.8   14905332 113.8 11333422 86.5
+#> Ncells  630860 33.7    1209490  64.6  1209490 64.6
+#> Vcells 1145357  8.8   14904305 113.8 11330492 86.5
 
 row=100
 col=100
@@ -116,7 +109,7 @@ system.time({
   }
 })['elapsed']
 #> elapsed 
-#>    6.37
+#>    6.49
 
 
 ### By column 
@@ -128,14 +121,12 @@ system.time({
   }
 })['elapsed']
 #> elapsed 
-#>    4.42
-
-
-sum(CC-CR)
-#> [1] 0
+#>    4.45
 ```
 
-#### Fun way
+### 2. Paralellizing
+
+#### 2.1 Using *foreach - doPar*
 
 There are several packages for parallelizing:
 
@@ -175,22 +166,17 @@ system.time({
   }
 })['elapsed']
 #> elapsed 
-#>    2.93
+#>    2.96
 
 
 stopImplicitCluster()
-
-sum(CC-C)
-#> [1] 0
 ```
 
-Anytime we initialize the cores using **registerDoParallel** there is no need to close the connections, they will be stopped automatically once the program detects they aren't used anymore.But anytime we want to explicitly require R to release them we can use **stopImplicitCluster**.
+Anytime we initialize the cores using **registerDoParallel** there is no need to close the connections, they will be stopped automatically once the program detects they aren't used anymore.But anytime we want to explicitly require *R* to release them we can use **stopImplicitCluster**.
 
-### Life is always a tradeoff
+##### 2.1.1 Life is always a tradeoff
 
-You might be wondering why we are not using more than 3 cores. Let's do it!
-
-First, we need to introduce some new functions:
+Once we become familiar on parallelizing, the idea that more cores mean less execution time start to wear off. For understanding this first, we need to introduce some new functions:
 
 -   **makeCluster**: initializes all the cores or clusters that we require.
 -   **stopCluster**: stops and releases the cores that we have initialized.
@@ -217,14 +203,13 @@ for(cols in 1:20){
 write.csv(Times2,'Times_Time_graph_DoPar_Hydra.csv',row.names = FALSE)
 ```
 
-The next plot shows the boxplots of the time Hydra required to finish computing the Kronecker product depending the number of cores that we ask.
+The next plot shows the boxplots of the time Hydra took to finish computing the Kronecker product depending the number of cores that we ask.
 
-<img src="Github_files/figure-markdown_github/Time_graph_DoPar_Hydra.png" width="500" />
+<img src="resources/Time_graph_DoPar_Hydra.png" width="500" />
 
-Given that we are sharing memory, i.e., in every iteration we are calling *B*, the way *R* in Windows handles this is by making the different cores wait until the others finish using *B*. Therefore, more cores doesn't always mean less processing time.
+Given that the problem we are facing doesn't require a lot of computational effort to be solved, it is useless to ask for more cores, that just increases the communication requirement.
 
-Divide and Conquer
-------------------
+#### 2.2 Using *Master - Workers*
 
 Now we will divide the task into subtasks that will be processed by different nodes (called workers) and that at the end will be managed by a master.
 
@@ -236,8 +221,8 @@ detectCores()
 
 
 doichunk<-function(chunk){
-  require(doParallel)
-  MatC<-foreach(A2=A[,chunk],.combine = 'cbind',.packages = 'foreach')%dopar%{
+  require(foreach)
+  MatC<-foreach(A2=A[,chunk],.combine = 'cbind',.packages = 'foreach')%do%{
     foreach(i=1:length(A2),.combine = 'rbind')%do%{
         A2[i]*B
     }
@@ -257,58 +242,15 @@ ChunkKronecker<-function(cls,A,B){
 cls<-makeCluster(4)
 system.time(valor<-ChunkKronecker(cls,A,B))['elapsed']
 #> elapsed 
-#>    4.63
+#>    4.61
 stopCluster(cls)
-
-
-sum(CC-valor)
-#> [1] 0
 ```
 
-``` r
+### 3. Submitting R scripts into the cluster
 
-Tiempos<-matrix(0,nrow = no_cores,ncol = 20)
-
-for(j in 1:20){
-  for(i in 1:no_cores){
-    cls<-makeCluster(i)
-    Tiempos[i,j]<-system.time(valor<-ChunkKronecker(cls,A,B))['elapsed']
-    stopCluster(cls)
-  }
-}
-```
-
-The next plot shows the boxplots of the times per number of cores for finishing the jobs.
-
-<img src="Github_files/figure-markdown_github/Time_graph_Workers_Hydra.png" width="500" />
-
-Submitting R scripts into the cluster
-=====================================
+#### 3.1 Forking
 
 From now on, the operating system will be Linux. Linux and Windows have significant differences from each other, not only in the graphic user interface, but also in their architectural level. One of the main differences is that Windows doesn't fork and Linux does. That means that Linux make copies of the needed variables in all the cores, instead of forcing the cores to queue and wait for using the shared variables.
-
-The basics
-----------
-
-First, open *R* in the terminal, install the packages and close *R*.
-
-``` r
-
-> R
-
-install.packages("doParallel", dependencies=TRUE) ## CRAN Mirror 34 (Germany)
-
-
-library(doParallel)
-
-(no_cores<-detectCores()-1)
-
-registerDoParallel()
-
-getDoParWorkers()
-
-q()
-```
 
 Let's check what happens if instead of **makeCluster** we use **makeForkCluster** (attention: this function is only available for Linux) for the Kronecker product.
 
@@ -354,10 +296,11 @@ for(h in 1:no_cores){
 
 doichunk<-function(chunk){
   require(foreach)
-  MatC<-foreach(A2=A[,chunk],.combine = 'cbind')%:%
+  MatC<-foreach(A2=A[,chunk],.combine = 'cbind',.packages = 'foreach')%do%{
     foreach(i=1:length(A2),.combine = 'rbind')%do%{
       A2[i]*B
     }
+  }
   return(MatC)
 }
 
@@ -408,10 +351,11 @@ for(h in 1:no_cores){
 
 doichunk<-function(chunk){
   library(foreach)
-  MatC<-foreach(A2=A[,chunk],.combine = 'cbind')%:%
+  MatC<-foreach(A2=A[,chunk],.combine = 'cbind',.packages = 'foreach')%do%{
     foreach(i=1:length(A2),.combine = 'rbind')%do%{
       A2[i]*B
     }
+  }
   return(MatC)
 }
 
@@ -437,40 +381,11 @@ for(i in 1:no_cores){
 Times<-data.frame(NoCores=1:no_cores,Normal=TimesN, Workers=TimesC)
 
 write.csv(Times,'TimesNoFork.csv')
-
 ```
 
-For running and R code in terminal, without opening *R*, just write **Rscript** followed by the name of your *R* file.
-
-``` r
-
-> Rscript KroneckerLinux.R
-```
-
-### Specifying node properties with *-R*
-
-**-R** runs the job on a host that meets the specified resource requirements. Some of its basic parameters are:
-
--   span\[hosts=1\]: this puts all processes on one host.
--   span\[ptile=&lt; x &gt;\]: *x* denotes the exact number of job slots to be used on each host. If the total process number is not divisible by *x* then the rest is submitted in the last core.
--   scratch(2): the node must have access to *scratch(2)*.
-
-### Last but not less important parameters
-
--   -n: submits a parallel job and specifies the number of tasks in the job.
--   -a: this option denotes a wrapper script required to run SMP or MPI jobs. The most important wrappers are[1]:
-    -   Shared Memory (**openmp**). This is a type of parallel job that runs multiple threads or processes on a single multi-core machine. OpenMP programs are a type of shared memory parallel program.
-    -   Distributed Memory (**intelmpi**). This type of parallel job runs multiple processes over multiple processors with communication between them. This can be on a single machine but is typically thought of as going across multiple machines. There are several methods of achieving this via a message passing protocol but the most common, by far, is MPI (Message Passing Interface).
-    -   Hybrid Shared/Distributed Memory (**openmpi**). This type of parallel job uses distributed memory parallelism across compute nodes, and shared memory parallelism within each compute node. There are several methods for achieving this but the most common is OpenMP/MPI.
-
-### The **bsub** command: Submitting jobs to the cluster
-
-**bsub** submits information regarding your job to the batch system. Instead of writing a large *bsub* command in the terminal, we will create a shell file specifying all the *bsub* requirements.
+#### 3.2 Preparing the Shell file for a parallel job
 
 The shell files can be created through either the linux terminal using the editor *nano* or Notepad++ in Windows.
-
-Parallel jobs
--------------
 
 ``` r
 
@@ -490,6 +405,11 @@ Parallel jobs
 R CMD BATCH NameCode.R
 --------------------------
 ```
+
+-   **Rspan\[hosts=1\]** runs the job on a host that meets the specified resource requirements.
+-   **n**: submits a parallel job and specifies the number of tasks in the job.
+-   **a**: this option denotes a wrapper script required to run SMP or MPI jobs. By default we use[1]:
+    -   Shared Memory (**openmp**). This is a type of parallel job that runs multiple threads or processes on a single multi-core machine. OpenMP programs are a type of shared memory parallel program.
 
 ``` r
 > bsub < NameShell.sh
@@ -521,39 +441,33 @@ R CMD BATCH KroneckerLinux.R
 
 Once we submit the job in the cluster it will look like:
 
-<img src="Github_files/figure-markdown_github/SUBMIT.PNG" width="800" />
+<img src="resources/SUBMIT.PNG" width="800" />
 
 Once
 
-<img src="Github_files/figure-markdown_github/email.PNG" width="300" />
+<img src="resources/email.PNG" width="300" />
 
-<img src="Github_files/figure-markdown_github/ForkVSnoFork.png" width="500" />
+<img src="resources/ForkVSnoFork.png" width="500" />
 
-Other important LSF commands
-----------------------------
+#### 3.3 Some important LSF commands
 
 -   bjobs: lists currents jobs.
 
 While not having a job slot:
 
-<img src="Github_files/figure-markdown_github/WAITING.PNG" width="800" />
+<img src="resources/WAITING.PNG" width="800" />
 
 Once having a job slot:
 
-<img src="Github_files/figure-markdown_github/WORKING.PNG" width="800" />
+<img src="resources/WORKING.PNG" width="800" />
 
--   bhist: lists older jobs.
--   lsload: status of cluster nodes.
--   bqueues: status of cluster nodes.
--   bhpart: shows current user priorities.
 -   bkill <jobid>: stops the current job.
 
-<img src="Github_files/figure-markdown_github/bKill.PNG" width="800" />
+<img src="resources/bKill.PNG" width="800" />
 
-References
-==========
+### References
 
-<img src="Github_files/figure-markdown_github/Book.jpg" width="200" />
+<img src="resources/Book.jpg" width="200" />
 
 <https://info.gwdg.de/dokuwiki/lib/exe/fetch.php?media=en:services:scientific_compute_cluster:parallelkurs.pdf>
 
