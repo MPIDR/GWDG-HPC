@@ -26,9 +26,7 @@ However, you are not yet connected to any of the three frontends (gwdu101.gwdg.d
 
 #### 1.2. ssh to a frontend
 
-Since the GWDG server uses Ubuntu (16.04.5 LTS), we cannot use Putty for this. We must establish the ssh connection "the Linux way".
-
-In the the Putty terminal, type:
+Since the GWDG frontend servers cannot be accessed from the Internet directly, we cannot use Putty for this. To establish an ssh connection to one of the frontend, type the following on the Putty terminal:
 
 ``` bash
 ssh gwdu102.gwdg.de
@@ -255,7 +253,13 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 
 ![](resources/WinSCP1.PNG)
 
-#### 3.2. File storage in the cluster
+#### 3.2. End of line markers
+
+
+Special care needs to be taken when transfering text files between operating systems as end of lines (EOL) are recorded differently in Windows (`\r\n`) and Linux (`\n`). 
+You can use `Notepad++` to translate the files before updating them to the cluster: **Edit | EOL Conversion** . This has already been done for the files provided in this tutorial.  
+
+#### 3.3. File storage in the cluster
 
 -   $HOME: our home directory is available everywhere, permanent, and comes with backup, but it is comparatively slow.
 
@@ -382,7 +386,6 @@ library(doParallel)
 
 -   Boehme, C. and Ehlers, T. (2018) Using the GWDG Scientiﬁc Compute Cluster - An Introduction. Goettingen: GWDG. [\[link\]](https://info.gwdg.de/docs/lib/exe/fetch.php?media=en:services:scientific_compute_cluster:parallelkurs.pdf)
 -   GWDG/DOCS: Running Jobs [\[link\]](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs)
--   MPIDR IT Wiki: *how to access the GWDG compute cluster*
--   MPIDR IT Wiki: *Parallel computing examples in R at GWDG*
+-   MPIDR Intranet IT FAQ [\[link\]](https://intranet.demogr.mpg.de/home/support/it/faq)
 
 [1] For more information on permission settings in Linux, see [this link](https://wiki.archlinux.org/index.php/File_permissions_and_attributes) and [this one](http://linux-training.be/funhtml/ch33.html) regarding advanced permission settings.
