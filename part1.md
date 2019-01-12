@@ -257,7 +257,7 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 
 
 Special care needs to be taken when transfering text files between operating systems as end of lines (EOL) are recorded differently in Windows (`\r\n`) and Linux (`\n`). 
-You can use `Notepad++` to translate the files before updating them to the cluster: **Edit | EOL Conversion** . This has already been done for the files provided in this tutorial.  
+You can use `Notepad++` to translate the files before uploading them to the cluster (navigate to **Edit | EOL Conversion**). This has already been done for the files provided in this tutorial.  
 
 #### 3.3. File storage in the cluster
 
