@@ -236,7 +236,7 @@ First we must create a new WinSCP session. TO do this:
 
 1.  Open WinSCP (from Desktop shortcut)
 2.  Clicking on `New Site` to start a new session with the settings:
-3.  File protocol `SCP`, Host name `login.gwdg.de`, Port number `22`, User name **firstname.lastname**
+3.  File protocol `SCP`, Host name `transfer.gwdg.de`, Port number `22`, User name **firstname.lastname**
 4.  Login with your MPIDR password
 
 To create a sub-folder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
