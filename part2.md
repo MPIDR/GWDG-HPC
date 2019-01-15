@@ -170,6 +170,7 @@ system.time({
 
 
 stopImplicitCluster()
+gc()
 ```
 
 Anytime we initialize the cores using **registerDoParallel** there is no need to close the connections, they will be stopped automatically once the program detects they aren't used anymore.But anytime we want to explicitly require *R* to release them we can use **stopImplicitCluster**.
@@ -197,6 +198,7 @@ for(cols in 1:20){
     }
     })['elapsed']
     stopCluster(cls)
+	gc()
   }
 }
 

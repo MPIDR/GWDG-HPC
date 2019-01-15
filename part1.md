@@ -42,6 +42,12 @@ Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster! If you see some
 gwdu102:5 10:37:08 ~ >
 ```
 
+
+
+``` bash
+module avail
+```
+
 ### 2. Working with files and directories
 
 #### 2.1. Basic Linux commans - a refresher
