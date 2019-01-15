@@ -277,7 +277,7 @@ It is also necessary to know how the cluster is structured:
 
 ![](resources/cluster.png)
 
-Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs).
+Source: [MPIDR Intranet IT FAQ](https://intranet.demogr.mpg.de/home/support/it/faq).
 
 #### 4.1. Processing jobs on the cluster
 
