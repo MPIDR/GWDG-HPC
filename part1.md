@@ -42,12 +42,6 @@ Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster! If you see some
 gwdu102:5 10:37:08 ~ >
 ```
 
-
-
-``` bash
-module avail
-```
-
 ### 2. Working with files and directories
 
 #### 2.1. Basic Linux commans - a refresher
@@ -281,7 +275,7 @@ The batch system distributes the processes across job slots, and matches the job
 
 It is also necessary to know how the cluster is structured:
 
-![](resources/GWDGarchitecture.PNG)
+![](resources/cluster.png)
 
 Source: [GWDG documentation](https://info.gwdg.de/dokuwiki/doku.php?id=en:services:application_services:high_performance_computing:running_jobs).
 
