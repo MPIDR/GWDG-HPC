@@ -470,7 +470,7 @@ Once having a job slot:
 
 ### References
 
-<img src="resources/Book.jpg" width="200" />
+"Parallel computing for data science" by Norman Matlof
 
 <https://info.gwdg.de/dokuwiki/lib/exe/fetch.php?media=en:services:scientific_compute_cluster:parallelkurs.pdf>
 
