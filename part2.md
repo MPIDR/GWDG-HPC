@@ -1,6 +1,7 @@
 Hands-on lab (Second Part)
 ================
-Sofia Gil
+Sofia Gil  <a href="https://github.com/SofiaG1l">info</a>
+
 January 15, 2019
 
 -   [Introduction](#introduction)
