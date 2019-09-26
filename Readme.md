@@ -19,3 +19,4 @@ You can complete a survey for the practical lab here: https://www.surveymonkey.d
 Diego Alburez: alburezgutierrez\[at\]demogr.mpg.de
 
 Sofia Gil: gil\[at\]demogr.mpg.de
+
