@@ -251,7 +251,7 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 2.  On the left panel of WinSCP, navigate to `N:\HPC_workshop\lab_files`
 3.  Select the files you want to upload, and drag and drop them on the newly created `lab_files` directory in the cluster (right-hand-side panel)
 
-![](resources/WinSCP1.PNG)
+![](resources/WinSCP1.png)
 
 #### 3.2. End of line markers
 
