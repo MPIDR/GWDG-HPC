@@ -15,31 +15,31 @@ Hands-on lab (First Part)
 Connecting to a GWDG frontend is a two-step process if you are working from outside the GWDG network (e.g. from the MPIDR or from home). First, you need to first establish a connection to the GWDG network. For this:
 
 1.  Open Putty (available from the intranet) and change the following settings
-2.  Host Name: `login.gwdg.de`; Port: `22`; Connection Type: `SSH`
+2.  Host Name: `glogin.hpc.gwdg.de`; Port: `22`; Connection Type: `SSH`
 3.  **Connection** | **Data**: Auto-login username: **firstname.lastname** (you can find your username by logging into [your GWDG account](https://www.gwdg.de/))
 4.  `Save` the session and open it using you MPIDR password (no asterix will appear as you type)
 5.  Acknowledge Putty's security alert by clicking on 'Yes'
 
 You are now logged into the GWDG network. *Well done!*
 
-However, you are not yet connected to any of the three frontends (gwdu101.gwdg.de/, gwdu102.gwdg.de/, or gwdu103.gwdg.de/). To do this we must open a new ssh connection.
+However, you are not yet connected to any of the three frontends (gwdu101.hpc.gwdg.de/, gwdu102.hpc.gwdg.de/, or gwdu102.hpc.gwdg.de/). To do this we must open a new ssh connection.
 
 #### 1.2. ssh to a frontend
 
 Since the GWDG frontend servers cannot be accessed from the Internet directly, we cannot use Putty for this. To establish an ssh connection to one of the frontend, type the following on the Putty terminal:
 
 ``` bash
-ssh gwdu102.gwdg.de
+ssh gwdu101.hpc.gwdg.de
 ```
 
-> The authenticity of host ’gwdu101.gwdg.de (134.76.8.101)’ can’t be established. ECDSA key fingerprint is SHA256:sIJNEepmILeEq/7Zqq4HCtpTM8L98arWTny5EiAX+gI. or ECDSA key fingerprint is 7c:52:2b:17:f8:ba:29:bd:c5:45:d1:1a:9e:8d:d6:f0. or RSA key fingerprint is b9:f9:46:0f:23:c8:8d:76:b9:83:b9:1b:f6:5e:d5:6b. Are you sure you want to continue connecting (yes/no)?
+> The authenticity of host ’gwdu101.hpc.gwdg.de (134.76.8.101)’ can’t be established. ECDSA key fingerprint is SHA256:sIJNEepmILeEq/7Zqq4HCtpTM8L98arWTny5EiAX+gI. or ECDSA key fingerprint is 7c:52:2b:17:f8:ba:29:bd:c5:45:d1:1a:9e:8d:d6:f0. or RSA key fingerprint is b9:f9:46:0f:23:c8:8d:76:b9:83:b9:1b:f6:5e:d5:6b. Are you sure you want to continue connecting (yes/no)?
 
 Accept the connection by typing 'yes'.
 
-Welcome to the the gwdu102.gwdg.de frontend of the GWDG cluster! If you see something like this, you are now ready to write Linux commands in the terminal:
+Welcome to the the gwdu101.hpc.gwdg.de frontend of the GWDG cluster! If you see something like this, you are now ready to write Linux commands in the terminal:
 
 ``` bash
-gwdu102:5 10:37:08 ~ >
+gwdu101:5 10:37:08 ~ >
 ```
 
 ### 2. Working with files and directories
@@ -65,25 +65,6 @@ These are some useful Linux commands that we will use in the next section to cre
 | df (-h) (-hl) | show disk space                          |
 | chmod         | change file attributes                   |
 
-#### 2.2. \[Optional\] Changing language to English
-
-By default, the cluster operates in German. You can check the language settings by typing:
-
-``` bash
-echo $LANG
-```
-
-You can change this for the current session:
-
-``` bash
-export LANG=en_US.UTF-8
-```
-
-For a permanent solution, add the command to the `.profile` file with:
-
-``` bash
-echo 'export LANG=en_US.UTF-8’ >> ~/.profile
-```
 
 #### 2.3. Exploring and modifying directories
 
@@ -229,15 +210,15 @@ You can see all the `nano` keyboard shortcuts by pressing `Ctrl`+`G`.
 ![](resources/nano_help.PNG)
 
 ### 3. File transfer with WinSCP
+**Note 2026-01-08**: updated this subsection to account for recent changes
 
 In this section we will learn how to upload files to the cluster with an SCP client for Windows. WinSCP is an open-source client available from the internet and MPIDR intranet.
 
-First we must create a new WinSCP session. TO do this:
+First we must create a new WinSCP session. To do this:
 
-1.  Open WinSCP (from Desktop shortcut)
-2.  Clicking on `New Site` to start a new session with the settings:
-3.  File protocol `SCP`, Host name `transfer.gwdg.de`, Port number `22`, User name **firstname.lastname**
-4.  Login with your MPIDR password
+1. Open WinSCP (from Desktop shortcut)
+2. Clicking on `New Site` to start a new session with the settings: file protocol `SCP`, host name `glogin.hpc.gwdg.de`, port number `22`, user name from the HPC Project portal (something like **u12345**)
+3. Under `Advanced > Advanced > SSH > Authentication`, add your private SSH key (if you did not create it with PuTTYgen, then you need to convert it to `.ppk` with PuTTYgen)
 
 To create a sub-folder, click in the remote windows (right), press F7, enter the folder name (e.g. mickey.mouse) and set the permissions as necessary.
 
@@ -255,11 +236,11 @@ Transferring files from a local directory to the cluster using WinSCP is easy:
 
 #### 3.2. End of line markers
 
-
 Special care needs to be taken when transfering text files between operating systems as end of lines (EOL) are recorded differently in Windows (`\r\n`) and Linux (`\n`). 
 You can use `Notepad++` to translate the files before uploading them to the cluster (navigate to **Edit | EOL Conversion**). This has already been done for the files provided in this tutorial.  
 
 #### 3.3. File storage in the cluster
+**Note 2026-01-08**: The information in this subsection is outdated. Temporary storage under `/scratch` will be phased out and new users will not have any assigned storage quota under `/scratch`. Please refer to the documentation on [storage systems](https://docs.hpc.gwdg.de/how_to_use/storage_systems/index.html), esp. the sections on [workspaces](https://docs.hpc.gwdg.de/how_to_use/storage_systems/workspaces/index.html) and [temporary storage](https://docs.hpc.gwdg.de/how_to_use/storage_systems/temporary_storage/index.html). **New users** should be aware that doing extensive I/O (lots of reading/writing data) on data stored in your home directory will be very slow. Use temporary storage for single jobs and workspaces for storage that spances several jobs or longer. Beware that data in temporary storage or workspaces will be erased when the job finishes or after a grace period. So use temporary storage/workspaces _while_ the job is running such as to not bottleneck the job by I/O but copy all relevant data, e.g. results or transformed data, to a safe location (e.g. `$HOME`) _before_ the job finishes.
 
 -   $HOME: our home directory is available everywhere, permanent, and comes with backup, but it is comparatively slow.
 
@@ -267,7 +248,10 @@ You can use `Notepad++` to translate the files before uploading them to the clus
 
 -   /scratch2: this is the shared scratch space, available on *dfa, dsu, dge*, and *dmp* nodes, and on the frontend *gwdu103*. For being sure of having a node with access to shared */scratch2* the command `-R scratch2` must be written in the shell file.
 
+
+
 ### 4. The cluster and queue system
+**Update 2026-01-08**: GWDG HPC now uses Slurm instead of LSF. See the README for the corresponding commands.
 
 For submitting jobs to the cluster it is necessary to create a `shell file` using a `batch system` through LSF commands. So, the GWDG cluster is operated by the LSF platform, which is operated by shell commands on the frontends. The **frontends** are special nodes (gwdu101, gwdu102, and gwdu103) provided to interact with the cluster via shell commands.
 
@@ -289,6 +273,7 @@ Submitting a job is a two-step process consisting of
 2.  Submitting the job script to a GWDG queue for execution
 
 #### 4.2. The job script
+**Update 2026-01-08**: While the logic of writing scripts and submitting them to the cluster is the same, GWDG HPC now uses Slurm instead of LSF. See the README for the corresponding commands. 
 
 Job scripts are shell scripts with special comment sections (`#BSUB`) that force each line to be interpreted as an option of `bsub`. The job files can be created through either the Linux terminal using the editor *nano* or Notepad++ in Windows.
 

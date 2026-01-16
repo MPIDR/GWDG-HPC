@@ -387,6 +387,7 @@ write.csv(Times,'TimesNoFork.csv')
 ```
 
 #### 3.2 Preparing the Shell file for a parallel job
+**Note 2026-01-08**: GWDG switched from LSF to Slurm. This means that the `#BSUB` and `bsub` command are no longer applicable. However, the overall logic is the same and transferable. See the README for how to use Slurm.
 
 The shell files can be created through either the linux terminal using the editor *nano* or Notepad++ in Windows.
 
